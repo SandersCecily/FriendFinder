@@ -6,19 +6,23 @@ module.exports = function (app) {
     });
 
     app.post('/api/friends', function(req, res){
-		var match;
-		var bestmatch = 100;
-		for(var i=0; i<10; i++){
-			var newDif = 0;
-			for(var j=0; j<friends[i].scores.length; j++){
-				newDif += Math.abs(friends[i].scores[j] - req.body.scores[j]);
-			};
-			if(newDif < bestmatch){
-				bestmatch = newDif;
-				match = i;
-			};
-		};
-		friends.push(req.body);
-		res.json(friends[match]);
+        friends.push(req.body);
+        var userscorearr = req.body.scores;
+        var userdifference = 0;
+        var differencearr = [];
+
+        for (var i = 0; i < friends.length - 1; i++) {
+            for (var j = 0; j < 10; j++) {
+                userdifference += (Math.abs(parseInt(friends[i].scores[j]) - parseInt(userscorearr[j])))
+            }
+            differencearr.push(userdifference);
+        };
+        console.log(differencearr);
+        var bestmatch = Math.min(differencearr);
+        var matchindex = differencearr.indexOf(bestmatch);
+        var match = friends[matchindex];
+        console.log(match);
+
+        res.json(match);
 	});
 }

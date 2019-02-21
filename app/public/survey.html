@@ -118,7 +118,7 @@
                       </div>
                       <div class="modal-body">
                         <h2 id="resname"></h2>
-                        <img id="resimg" src="" alt="">
+                        <iframe id="dogvid" width="853" height="480" src="" frameborder="0" allowfullscreen></iframe>
                       </div>
                       <div class="modal-footer">
                         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -129,39 +129,32 @@
                 </div>
               
                 <script type="text/javascript">
-              
-                  // Capture the form inputs
                   $("#submit").click(function(event) {
                     event.preventDefault();
            
-                    // Checking to see if user answered all of the survey questions.
                     for (var i = 1; i <= 10; i++) {
                         if ( $("input:radio[name=q"+i+"]:checked").val() == null ) {
                             alert("Please fill out all questions!");
                             return false;
                         };
                     };
+
                     // Creating an array to hold the answers.
-                    var scoreArray = [];
-                    // Looping through the answers and pushing them to the array. 
+                    var scoreArray = []; 
                     for (var i = 1; i < 10; i++) {
-                        scoreArray.push( $("input:radio[name=q"+i+"]:checked").val());
-                        console.log($("input:radio[name=q"+i+"]:checked").val());
+                        ansinput = parseInt($("input:radio[name=q"+i+"]:checked").val());
+                        console.log(ansinput);
+                        scoreArray.push(ansinput);
                     }
-                    // Creating an object that stores all of the input given by the user.
                     var user = {
                         scores: scoreArray
                     };
 
-                    $.post("/api/friends", userData, function(data) {
-
-                        // Grab the result from the AJAX post so that the best match's name and photo are displayed.
+                    console.log("user: " + user.scores);
+                    $.post("/api/friends", function(data) {
                         $("#resname").text(data.name);
-                        $("#resimg").attr("src", data.photo);
-
-                        // Show the modal with the best match
-                        $("#modal").modal("toggle");
-
+                        $("#dogvid").attr("src", data.photo);
+                        $("#modal").modal("show");
                     });
     	        });
 </script>
