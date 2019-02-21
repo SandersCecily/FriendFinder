@@ -133,58 +133,37 @@
                   // Capture the form inputs
                   $("#submit").click(function(event) {
                     event.preventDefault();
-              
-                    // Form validation
-                    function validateForm() {
-                      var isValid = true;
-                      $(".form-control").each(function() {
-                        if ($(this).val() === "") {
-                          isValid = false;
-                        }
-                      });
-              
-                      $(".chosen-select").each(function() {
-              
-                        if ($(this).val() === "") {
-                          isValid = false;
-                        }
-                      });
-                      return isValid;
+           
+                    // Checking to see if user answered all of the survey questions.
+                    for (var i = 1; i <= 10; i++) {
+                        if ( $("input:radio[name=q"+i+"]:checked").val() == null ) {
+                            alert("Please fill out all questions!");
+                            return false;
+                        };
+                    };
+                    // Creating an array to hold the answers.
+                    var scoreArray = [];
+                    // Looping through the answers and pushing them to the array. 
+                    for (var i = 1; i < 10; i++) {
+                        scoreArray.push( $("input:radio[name=q"+i+"]:checked").val());
+                        console.log($("input:radio[name=q"+i+"]:checked").val());
                     }
-              
-                    // If all required fields are filled
-                    if (validateForm()) {
-                      // Create an object for the user"s data
-                      var userData = {
-                        scores: [
-                          $("#q1").val(),
-                          $("#q2").val(),
-                          $("#q3").val(),
-                          $("#q4").val(),
-                          $("#q5").val(),
-                          $("#q6").val(),
-                          $("#q7").val(),
-                          $("#q8").val(),
-                          $("#q9").val(),
-                          $("#q10").val()
-                        ]
-                      };
-              
-                      // AJAX post the data to the friends API.
-                      $.post("/api/friends", userData, function(data) {
-              
+                    // Creating an object that stores all of the input given by the user.
+                    var user = {
+                        scores: scoreArray
+                    };
+
+                    $.post("/api/friends", userData, function(data) {
+
                         // Grab the result from the AJAX post so that the best match's name and photo are displayed.
-                        $("#match-name").text(data.name);
-                        $("#match-img").attr("src", data.photo);
-              
+                        $("#resname").text(data.name);
+                        $("#resimg").attr("src", data.photo);
+
                         // Show the modal with the best match
-                        $("#results-modal").modal("toggle");
-              
-                      });
-                    } else {
-                      alert("Please fill out all fields before submitting!");
-                    }
-                  });
-                </script>
+                        $("#modal").modal("toggle");
+
+                    });
+    	        });
+</script>
 </body>
 </html>
